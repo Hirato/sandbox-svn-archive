@@ -1,0 +1,28 @@
+src/mingw/.objs is removed
+readme is up to date
+review license
+packages/base & models is clean
+mod/packages/base is clean
+disclaimer up to date
+credits recognized
+stdout.txt removed
+delete config.cfg and init.cfg and server.cfg
+remove sandbox todo
+remove CVS folders
+remove extra carts
+remove house2
+makesure sauerbraten is out of all the code
+test for lavadamage and falling off the side
+remove .o files
+remove ncb out of vcpp and personal info
+remove sandbox.pdb
+remove sauermod folders
+update win project files
+
+add a blank my_stuff\packages\base folder
+
+REMOVE THE concept FOLDER!
+
+delete this file :D
+
+DOWNLOAD AND TEST BOTH FILES COMPLETELY

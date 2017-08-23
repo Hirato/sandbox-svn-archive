@@ -1,0 +1,680 @@
+"There is nothing greater than being a hero for a kid"
+
+TODO list
+=========
+We only track critical tasks here and the changelog. For a more in depth to do list, please consult http://www.sandboxgamemaker.com/wiki/index.php?title=Todo
+
+
+How to contribute
+=================
+We are always looking for competent individuals to join us.
+If you believe you have what it takes, come say hi to us at irc://irc.oftc.net/sandbox
+Keep in mind for content producing positions, your case will be a lot more convincing if you have some samples of your previous work handy.
+
+Artists
+* experience with any modelling (models, maps for cube 2 derived games), image manipulation (textures and artwork) or audio recording software (sounds and music).
+* comfortable with granting us a non-exclusive license under the Creative Commons family of licenses to distribute the work. Rights to create derivatives and use it commercially are preferable though not necessary
+* for modellers, experience with cube 2's model loader is a bonus, but we'll provide assistance when asked.
+
+Coders
+* some degree of competency with C or C++
+* comfortable with the sandbox codebase and its structure
+* the ability to write standards compliant code without using compiler extensions (eg, for GCC http://gcc.gnu.org/onlinedocs/gcc/C-Extensions.html )
+* has an existing development environment and can compile sandbox successfully.
+* Additonally someone comfortable with obj-C is seeked to maintain and improve the OS X launcher
+
+Maintainers
+* Is able to prepare releases for either FreeBSD or OS X
+* maintain the project files for their respective system
+* can compile the release for one of the above systems
+
+Support
+* a helpful demeanor
+* basic knowledge of sandbox's internals and how everything works
+
+3.0.0 release todo
+==================
+* move non-free art assets to another branch and release this that an extra
+* find or make replacements for the above item
+
+===========================================================
+ ___   _   _          _  _   ___    ____   _     ___   ___
+/  _\ | |_| |   /\   | \| | /   \  | ___| | |   /   \ /   \
+| |_  |  _  |  /__\  |    | |  ___ | _|_  | |_  | O | |   __
+\___/ |_| |_| /    \ |_|\_| \___/  |____| |___| \___/ \___/
+
+
+PAS 3.0.0 Changes
+=================
+
+Linux
+* fixed permission errors with install.sh script, and improved it for package creators. People who used the previous script SHOULD MAKE SURE TO CLEAN UP EVERYTHING CREATED/MOVED BY THE PREVIOUS SCRIPT!
+
+
+Art
+* new map, "daynight" - an example of a working Day/Night cycle, currently lives in the RPG module, should work for all game modules.
+* A bunch of skyboxes from "Elysium" of 3delyvisions ( www.3delyvisions.com )
+* A bunch of new skyboxes from "SkiingPenguins" ( http://www.woodlandgeek.com/skyboxes )
+* Partially redone UI theme, primarily to feature a more balanced colour gamut.
+* Replaced caustics textures with the public domain ones from Sauerbraten.
+
+
+Generic changes
+* Save map option in the editing menu (how embarrassing!)
+* getcurmap command extended to all game modules for getting the name of the current map.
+* Extended lights to use a 6th attribute, this attribute when not zero corresponds to a respective light_# alias, this alias is executed and returns up to 4 values, which are used as the radius-RGB values for all lights with this tag. Remember, radius <= 0 is infinity, and RGB values of (0, 0, 0) are still rendered.
+* as a fallback, entities without a dedicated QuickEdit GUI will generate one with fallback dummy attributes with a range of -10000 --> 10000
+* Respawn material renamed to "death" to reflect upstream.
+* Entfind GUI, accessible via F5
+
+
+FPS changes
+* removed dynlight entities, just use regular lights now (See generic changes)
+* allow scrolling over an item entity to switch between items.
+
+
+RPG Changes
+* A CubeScript vector library
+* Re-implemented entity previews for editmode. This uses a temporary cache which is flushed upon map load and generated as needed in editmode.
+* replaced global indices with named globals, these are incompatible with older releases.
+	old form: var = (r_global_new 0);
+	new form: r_global_new var 0
+	limited compat; var = var; r_global_new var 0
+* local variables, currently supported by rpgent derivatives, items, and maps.
+* immutable references - protects built in references and enforces a read-only nature from the game
+* Support for consumable types, like potions or books.
+* item charges, once charges are expended, the item is useless, consumables default to 1 and other items to -1 (infinite)
+* Experimental waypoint dropper promoted to default and only waypoint dropper. It gets the job done a lot faster, but still uses a tracer for airborne nodes. Also maps correctly inside liquids.
+* Most _get configuration commands have been deprecated, using them will print a warning. Instead of r_char_mdl_get, you now write $r_char_mdl, it's quicker, easier, simpler, and nicer for syntax highlighers.
+	The following regex can be used to convert affected variables easily, just go through them one by one to avoid changing non-configuration commands.
+	Find: \((r_\w+)_get\)
+	Replace: \$\1
+* Convert internal cataloguing system from indices to hashes.
+	- To use Mana, Health, and Experience as valid ammunition, you must use "mana," "health," or "experience" to use them as opposed to -1, -2, or -3
+	- Other locations that previously used -1 to denote missing slots (eg, -1 for no particle effects, or merchantability, etc) now use "" to denote empty values.
+	- If you rely on default scripts and factions, their names have changed, for example, item is now "default item" not "3" - these will fallback to the null script if not found.
+	- entities now have a string based name field of up to 64 characters (including '\0'). Set this with /spawnname <name>.
+	- argument 2 of the associated entities are removed, formatted into a string and placed into the entity; this retains backwards compatibility with old maps.
+	- the hashes are stored in a hashpool, this limits the increase in memory usage, in addition this pool is also used to store the names of variables (global and local), dialogue nodes, reference names, signal names, which should give us a small win where memory use is concerned.
+* Send a "resurrect" signal to character entities if resurrected.
+* Platforms now send an "arrived" signal whenever they arrive at a platformroute entity. Tags can be inspected via the route_tag variable.
+* Simple checkpoints, works across maps.
+* Support for portraits in the chat window
+* Journal entry states - Check the JRN_* values in enums.cfg. This seconds as a classification system.
+* Expose core entity properties to config via r_ent_*, automatically selected if you select a derived type. At present this mostly leaves you play directly with your vectors and orientation.
+* Watch and Follow directives are now available for the AI
+
+
+SSP changes
+* make 2HP state a lighter yellow.
+* correct box entity offsets.
+* enumerate pickups/boxes written by the exporter.
+* allow pickup_armour types to have arbitrary icons and colours set for them.
+* basic Goomba level AI
+* DJUMP armour, simpler version of the FLY armour that allows only one jump in the air.
+* homing mines and grenade projectile types.
+* various tweaks, cleanup and optimisation
+
+
+Generic bugfixes
+* Prevent a model from loading when one is already being loaded, the models that caused a recursion nightmare should be fixed now, really.
+* fix editfacewentpush behaviour when an entity is selected
+* Fix material filter in the edit menu
+* potential crash from /showenttext 0
+* Fix display of texture ids in the texture menu; the numbers should now be accurate for vlayer usage.
+* Fixed path for fallback crosshair
+
+
+FPS Bugfixes
+* correct spacetf typo
+
+
+RPG bugfixes
+* Fix calculation of extra empty inventory, barter and looting buttons.
+* Fix some potential crashes, such as when r_setref was called outside of a game.
+* Fix a crash when issuing item_use configuration commands without selecting an item, after initialising an item.
+* Fix paperdoll's feet slot.
+* Fix savegame temporary files not renaming properly on Windows"
+* Trade can no longer be initialised with entities who have invalid merchant tags.
+* Fix r_relationcond helper's "like" case not getting triggered.
+* Fix base-game categories file.
+* Fixed some minor memory leaks"
+* Fix render orientation for all non-player objects.
+
+
+SSP bugfixes
+* use proper default crosshair
+* fixed HUD paths and images
+* fixed box rendering/collision offsets
+* fixed lightning particles for "attracted" pickups.
+* enemies are no longer simulated in editmode with the ability to hurt the player.
+
+
+KRS bugfixes
+* use proper default crosshair
+
+
+Upstream imports
+* Octa Brushes
+* Tess import - this adds real time lighting, HDR, SSAO and various other deferred rendering witchcraft and sorcery. This means we now have a minimum requirement of support for an OpenGL 2.1 compatibility context.
+* multiple masters/admins for the FPS
+* Correct handling of $"" and @"" in cubescript, eg, $"//comments are fun" will use the string to lookup the alias, '//comments are fun'
+* more configurable and serverside map rotations.
+* additional material filters, including empty, notempty, notsolid, and solid.
+* 4 types of water/lava/glass
+* Model Previews
+
+
+PAS 2.8.0 Changes
+=================
+
+Art
+* Assorted RPG related icons from Tony
+
+
+Windows
+* removed smpeg and mikmod dlls - this means MP3 and mod tracks can no longer be played
+* Updated bundled version of SDL libs, this provides support for flac audio tracks and webp images
+
+
+Generic
+* Removed 3dgui
+* Significant work on UI
+* introduction of freecursor variables, default setting is 1; 0 disallows free movement, 1 frees the cursor when the UI is open and 2 frees it at all times
+* UIOverlay type which accepts no input
+* significantly improved Text Editor, based on the patches from Eduardo Terol
+* Tooltips
+* split animations into engine specific portion (idle, forward) and game specific portions (attack, block, taunt)
+* new decals and particles, mainly for "WaterGun Wars"
+* The engine will now complain if it cannot load a model, as opposed to silently killing performance as was done in the past.
+
+
+FPS
+* reintegration of weapon subsystems
+* new map, Snowcourt by Kid_Matthew
+
+
+RPG
+* overhaul item system - allows dynamic and varying values (ie Diablo), all items will still stack where possible.
+* new inventory management system - items are now managed as sets of identical bases
+* numerous script changes related to item code, the like of r_drop and r_equip now require T_INV references.
+* references now support lists; additional items can be pushed onto the end or removed from a random place. Index is specified by ref:idx, idx is assumed to be 0 when not specified for most commands.
+* r_script_signalappend command, this allows you to register extra commands per signal. For example an entity may use this to get a more specialised inventory on top of the basics for his type.
+* don't use static templates for characters/triggers/containers/obstacles/platforms. Definitions are now used as dynamic templates.
+* global vairables are now of the string type - shouldn't break existing code
+* models are now queued for preloading when assigned.
+* numerous new and functional interfaces for the UI system.
+    * Includes trade and looting!
+    * paperdoll equipment UI with by slot filtering for equipment
+* implemented merchant types, with trading rates, multiple currencies and even store credit.
+* Item categories are now defined as a stand alone item
+* use dynamic limits for applicable types, like faction and merchant.
+* map and newmap will now just return, rather than start the default game when no game's in progress.
+* commands to query the values of the delta stats (values changed via buffs)
+* rudimentary journal system; implemented as named buckets in which each contain multiple entries
+* "r_hudline" text for displaying important messages on screen, currently used to inform you of level ups.
+* Dialogue system is now node based - the command has been changed to r_script_node from r_script_say. Note the syntax is different so update your dialogue accordingly.
+* Split ATTACK_MAGIC into 4 subtypes, ATTACK_ARCANE, ATTACK_MIND, ATTACK_HOLY, ATTACK_DARKNESS
+* Ammunition can now be recovered for projectile based and thrown weapons.
+* Items that collide will now merge into a single stack, provided they're the same item (should help with performance).
+* throttle item and obstacle physics updates to once every 5 seconds if it is not airborne or has a velocity below 1 u/s, in addition align items with the ground, should improve performance as well.
+* areaeffects can now utilise lensflares and dynamic lights from their associated particle effect.
+* new references are now made in the first reference stack. To create a new reference in the current stack (if it doesn't exist there), use r_local. This behaviour change was made to mirror cubescript.
+* removed commands r_loop_equip and r_get_status_group - they were effectively useless in light of recent changes.
+* exposed some core (some dynamic) entity properties, these are available via r_ent_*, r_select_ent, etc. This is set implicitly when an associated type is selected for configuration, outside of the initialisation stage.
+
+
+Generic Bugfixes
+* Fixed missing preview for text (type 8) particles and crash while previewing type 11 particles;
+
+
+FPS related bugfixes
+* fix for adddynlights when checking entities with no attributes
+* fix for disconnects when talking in multiplayer
+
+
+RPG related bugfixes since 2.7.1
+* fixed crash in the renderer when starting a game after aborting one
+* fixed recipe requirements calculations
+* fixed possible memory corruption when trying to use a reference of T_ITEM (rpgitem) as one of type T_INV
+* fixed possible crash with the non-temporary T_INV references when using r_destroy on its container.
+* fixed behaviour when aborting during game initialisation; you'll no longer be thrown into an empty map.
+* fixed memory leak when creating uses of type use_weapon or use_armour
+* fixed possible crash and weirdness from restoring rpgtrigger timestamps where lasttrigger > lastmillis would be true.
+* fixed possible issues when using r_select commands to select something of another type, when the inferred index is out of range.
+* fixed character status effects to not reset the attributes until right before the next iteration for status effects as opposed to the end of the update cycle; broke hpregen and mpregen buffs and the disply of deltas.
+* fixed restoring savegames in which factinos have a saved relationship
+* fixed incorect read/write order for an areaeffect's owner and its location
+
+
+
+Upstream
+* Cubescript compiler tweaks
+* local command for restricting variables to a cubescript block
+* collect game mutator for the FPS
+* assorted bugfixes
+* fixed lightmap blurring
+* servcmd for the FPS for server mods
+
+
+
+
+PAS 2.7.1 Changes
+=================
+
+Art
+* removed a large number of archaic or otherwise useless maps
+* moved non-free textures and music out of the main branch
+* Added cork279's music collection
+* added tyche's textures
+* replaced some particle sprites with those provided by JSoftApps
+
+Generic
+* re-added sliders as an option for most properties in the entity menus. You can find a toggle in the Misc tab
+* fixed a memory corruption issue when preparing more verbose entity information for the editmode helper
+
+RPG
+* clear cancelled status of cutscenes after skipping a cutscene
+* fixed potential crash/corruption for use configuration with an invalid use type
+* disable savegames in editmode and while the reference stack is deeper than 1
+* r_sleep, like sleep but duplicates the reference table and persists over sessions.
+* r_select commands have laxed requirements and can be initialised from additional reference types (eg, faction can now be initialised from a character)
+* reimplemented resistances and thresholds - the current iteration works for victimeffects, areaeffects AND wielded equipment
+* initial support for hotkeys (It's a bit hacky without a user friendly means of binding them)
+* HUD tweaks (Filters out effects with a duration of < 500 ms, reenabled damage compass, hotkeys, flashing of the health bar on critical health)
+* encumbrance - you can carry 2x as much as your limit at the cost of mobility
+
+Upstream
+* (un)ignore commands for FPS module communication
+* map format now supports convex triangle fans - basically this improves the results of remip dramatically
+* abs(f) commands
+* assorted other bugfixes and tweaks
+* support for international character sets
+
+
+
+PAS 2.7.0 Changes
+=================
+
+Art
+* philipk texture sets
+* new RPG HUD theme and icons
+
+FPS
+* doom-style mouse move
+
+RPG
+* removed script slots and replaced with a signal based approach to scripting
+	for example r_script_collide is now r_script_signal collide; note it is case sensitive like everything else.
+* named lookup script subsystem, has its own stack and tracks things independently of CubeScript.
+* Modified folder hierarchy, uses a more classical and less confusing approach to identifying unique artefacts. This has the added bonus of making patches simple and painless. Unfortunately finding the one you want is now a chore
+* rewrote projectile system
+	P_PERSIST, allows projectiles to pierce multiple targets and bounce of them instead if P_RICOCHET is present
+	projectiles with timers without P_VOLATILE will act as timed bombs when a surface is hit.
+* commands to select and modify definitions and many aspects of entities and an accompanying menu.
+* basic skills, stats, examine and recipe menus.
+* experimental waypoint dropping mode taht links to all nearby waypoints, rather than mapping the player's movement. This has the disadvantage of not mapping collisions accurately. ( /experimentalwaypoint )
+* a few basic AI directives
+* AI routes are now stored in reverse order, this is faster and allows us to easily and quickly do minor alterations (eg, dodging).
+* rewrote savegame system, writes to a temporary file (just in case) and no longer saves RPG definitions (eg, item properties)
+* introduction of game properties (ie, the initial map to spawn the player on)
+* functional recipes
+* map flags, several flags were added that are perfect for dungeon levels
+* chargeflags, controls which facets of an attack can be charged
+* rewrote particle effects to not encompass 3 stages, each required stage now points to a separate effect.
+* reduced particle spam
+* pause the game whilst in editmode.
+* reintroduction of CRITTER, ITEM, OBSTACLE, CONTAINER, PALTFORM and TRIGGER entities to complement the SPAWN entity.
+* assorted fixes and balancing of defaults
+* attachments
+	you can attach particles to tag_partstart and tar_partend as well, there are currently a few bugs whilst dual wielding
+* r_rehash command to reload RPG definitions; save your map and game before using this
+* allowed the HUd to be redefined via script
+* rewrote cutscene subsystem, interpolation gradients can now be defined with ease, and this includes improved support for on screen items, such as images.
+* functioning platforms - note that there are some quirks and limitations right now
+
+
+Upstream
+* Windows: the dedicated server will now create an icon in the systray
+* -g flag for specifying output file (not supported in our Linux script, use './sandbox_unix -my -args > file' instead)
+* the server will load entities directly from the map when possible
+* pre-multiplied alpha support, (plus DXT2 and DXT4 support)
+* support for tag transformations on skeletal model bones
+* simplified IK for pitch animation
+* sunlight ( /sunlight* series of vars)
+* the server can now read entities directly from maps
+* proper multiline support for gamehud and edithud alises
+* movie recorder now uses OpenDML/AVI 2.0, this means recordings are now taken as a single contiguous unit
+* improved model lighting that preserves contrast on the unlit side
+* improved lightmap packing when a cube's face consists of more than one plane.
+* many assorted bug fixes
+
+
+Update Notes
+The RPG has changed a lot, and is more or less fully incompatible with 2.6.1 and earlier. In addition the RPG may now be considered to be an Alpha, as opposed to a Pre-Alpha/Tech Demo. There is a "base" game included with the RPG, please use this to derive your own
+
+
+PAS 2.6.1 Changes
+=================
+
+Art
+* Exchanged radio buttons and checkbox buttons for included themes
+
+FPS
+* fixed triggers with TRIG_LOCKED, flag was checked against the wrong attribute
+* don't auto-kick people for exceeding the speed limit; jumping is 200 u/s and the imposed limit is 180 u/s
+
+RPG
+* rudimentary inventory - HIGHLY INCOMPLETE
+* fixed weird haste effect post teleporting; under certain conditions the teleportee was duplicated
+* fixed SCR_COLLIDE - this script slot can now be used
+* jumppads
+* fixed crash when entities are rendered without going through at least one update() cycle
+* dialogue
+* removed CREATURE, ITEM and OBJECT entities in favour of SPAWN entity
+* things no longer spawn at spawn points; you must explicitly summon them via the commands
+* example game modified to use a more extensible and maintainable structure
+
+Linux
+* properly escape commandline arguments
+
+Upstream
+* CubeScript Compiler
+
+
+
+PAS 2.6.0 Changes
+=================
+
+Generic
+* revised directory structure - things are now sorted in more intuitive groups
+* removed remaining remnants of lang
+* reorganised particles
+* removed entity attribute limit, their number is now defined by entity
+* removed script word limit, you can now give more than 24 arguments
+
+NEWUI
+* compile with -DNEWGUI to activate
+* fixed a LOT of bugs
+* small example menu
+
+RPG
+* brand new design; currently lacks any form of GUIs
+* melee combat
+* charged weapons (fireballs, bows)
+* ammo
+* teleports
+* triggers
+* cutscenes
+* savegames
+
+SSP
+* fix for inability to load maps added in through -k or -q
+* ability to aim with the mouse
+* fixed movement - less annoying and will force you to always move in the intended direction
+* pickup_#, checkpoint_# and box_# script slots for activating the respective items
+
+Linux
+* launcher scripts (run with -? for more info)
+
+Art
+* torley glass and desat texture sets
+* plastic set by FrenchBadPing (Public Domain)
+* removed non-free art form default texture list
+
+Scripts
+* recorder menu
+* rearranged skybox settings
+* cleaned up various scripts
+* segregated game specific scripts
+* updated particles, options and editing menu
+* blendmap menu
+* removed 'skill levels', there is now only one editing and options menu
+
+Upstream
+* writeobj exports texture coordinates
+* sped up calclight slightly
+* guinameslider
+* additional fogdome tweaks
+* alpha material, combine with /valpha to create translucent geometry
+* VSlots, allowing the creations of variants in realtime in game (via "vrotate", "voffset", "vscroll", "vscale", "vrotate", "vlayer", "vshaderparam", "vreset", "vdelta" and "valpha" commands)
+* added "replacesel" command that only replaces textures within the current selection
+* added "conscale" var that controls the size of console text
+* added SMD and IQM model support
+* usual assortment of tweaks and fixes
+* string comparison functions (s suffix)
+* sync clipboards between players in coopedit
+* screenshotdir variable for setting screenshot directory
+* improved skeletal animation in fixed-function mode
+* added GLSL renderpath (toggled via /forceglsl)
+* Uniform Buffer Objects support in GLSL skeletal animation path
+* Minimaps
+* smoothed climbing of 1:1 stairs
+* sky-textured geometry no longer blocks skylight
+* revised vertex formats to be more efficient on old/generic 3D cards
+* made lightmap generation thread safe, (and subsequently multithreaded)
+
+
+
+PAS 2.5.0 Changes
+=================
+
+RPG
+* experience points (scarcely implemented)
+* global idents
+* more script functions
+* improved documentation
+* improved trails of very fast projectiles
+* basic trade menu (almost fully implemented)
+* rudimentary checkpoints
+* rudimentary minimap (/testminimap)
+* partially working load/save system (test{game,map}{save,load})
+* items can now confer effects to the player
+* addition of a head slot
+* arbitrary limits for r_* floating points and integers
+* improved projectile collision methods
+
+SSP
+* improved and simplified the pickup vector, choosing the valid pickup in the entities are easier now
+ - note, only e.attr1 is significant now, so update your maps accordingly if needed
+* better helpers, they tell you what the entity does now (and even renders a transparent modelpreview)
+* fixed attractive armour logic, the closer the item the faster it travels, instead of inversely
+* boxes with basic item rejection
+* less hacky and far more fluid and dynamic camera
+* new map jungle by nieb
+* movement is now based on the ideal camera position, rather than the current
+* fixed projectile entity collisions
+* debug mode (toggled via /debug 1)
+* volatile items
+
+General
+* by default you now need to click on tabs to select them
+* replaced music packs with a custom track list (place tracks inside package/mymusic)
+
+Art
+* new models
+- lava rock by daniel_san
+- SSP box by hirato
+- an extensive array of new models courtesy of Vickie Eagle
+* new themes
+* new audio track (Valley of the Wind by Bjra from newgrounds)
+
+Upstream
+* many optimisations and bug fixes
+* tweaked physics to use Minkowski Portal Refinement
+* motion blur
+* fogdome
+
+Bugs
+* editmode arrow key binds were bound to empty binds
+* particle menus depended on an alias which was misspelled
+* queer message displayed when unable to initialise mixer controls
+* ent helper text display outside editmode
+* resetgl doesn't respect texanim
+* culltextures doesn't respect texanim
+* RPG crashes when a map is changed while dialogue is open
+* texanim limited to one update per frame, this causes the anim to go out of sync during low framerates and race to where it should be, when framerates are more acceptable
+* some packet parsing weirdness when dedi != 2
+* clients don't initialise properly on the server
+
+
+
+PAS 2.4.0 rc1
+=============
+
+* rendering             - cleaned up editmode helper code, and integrated with the main helper stuff, editmode helpers for ssp, and a grid for
+                          the current selection to use as a guide, also hovering text to describe the entities, additional main helpers.
+
+* GUI                   - showtexgui modified to display some texture properties at the bottom, such as scale, offset and dimensions. Usual assortment of menu tweaks
+
+* scripts               - restricted world var modification to editmode, tweaked mapcfgs, menu tweaks, direct up/down movement
+                          (editmode only, bind keys to actions, rise and descent, eg /bind KP_MINUS [rise])
+
+* Art                   - There's a new snow texture pack by Tomek (CC_BY_SA), the trak5 texturure pack of over 150 textures (MIT/X11), 2 skyboxes, a new loading
+                          screen and many new normalmaps. There's also several new maps, bastion, trainmap and rpg_snow to name a few, and courtesy of Captain_Ahab,
+                          we've plenty brand new models.
+
+* SSP                   - Improved the axis switchers, pickups are now "movable", and as such the magnetic armour works, there's a spike armour type that hurts an
+                          onslaughter, the winged armour allows multiple upward impulse jumps, projectile primitives are completed, to the degree of shooting and
+                          collision with geometry.
+
+* RPG                   - We've got a brand new RPG! with very primitive NPC, projectile, inventory, spell and use functionality!
+
+* upstream              - tons of bugfixes, new grass, password protected servers, clients can now act as a server, ragdolls, mainmenu,
+                          dds textures (DXT 1/3/5), new particles, better resolution detection, hex display of colour affected variables, particle culling,
+                          sounds system improvements, sound culling, movie recording, blendmap streaming (constant painting) and masks, a masterserver, motion blur
+                          and more
+
+* multiplayer           - added /me and /meteam commands for describing emotes
+
+* cleanups              - A fair bit of stuff has been cleaned up, resulting in optimisations and noticable speed ups in certain areas of sandbox
+
+=BUGS!!!=
+
+* incorrect particle numbers were used in fpsgame and moviecube, hence causing all kinds of weird oddities when displayed
+* texscroll was saved with it's values divided by 1000
+* autograss can now use texture commands like <mad>
+
+Migration/update notes
+======================
+
+sometimes we can't keep everything compatible with future releases for whatever reason, whether the way it worked wasn't so great, a better way of doing it presented came about or perhaps something just got too annoying, whatever the case, take note of these when updating to post 2.3 releases
+
+* the -art map cfg now stores ALL map related data, with the exception of aliases, and is written on map save or manual invocation of /writemapcfg [cfg name]
+	this means if you've saved any maps using older versions of sandbox with mapcfg generation (2.2.3, 2.2.4, and 2.3.0), do the following
+	open the map in 2.4.0 or later, and type /writemapcfg, or save the map
+	delete anything in the map's main cfg that has nothing to do with aliases
+
+	it once again allows all scirpt related stuff to be in the main cfg, which is convenient not to store in an onstart alias for legibility purposes
+
+* maps store world variables, this defuncts the world variables saved in the cfg, but the cfg still allows convenient editing access
+
+* normalmap optimisations, this resulted in several textures being removed, so  errors will likely display on mapload, do one of the following should any occur
+	1) if you use custom texture definitions, copy the new definitions over to your map-art.cfg, be sure to replace the prior definition
+	2) if you've customised the cfg outside the texture area, remove the texture section (Somewhat recommended)
+	3) if you didn't customise it, just delete the map-art.cfg, (Safest and recommended)
+
+* moviecube isn't working: due to the defunct state the codebase inside sandbox hasn't been maintained, we apologize to all who wanted to use it, please stick with 2.3 in the meantime or obtain an official moviecube release
+
+* /setgravity and /jumpvelocity is once again, /gravity and /jumpvel (we can't make up our minds can we, won't change it again, honest ;D)
+
+* translations defunct until further notice, they're currently being redone, so making translations will be significantly easier for future attempts, allthough current translation efforts will be voided
+
+
+
+PAS 2.3 Changes rev 759
+=======================
+
+* configuration updates - binds were redone to have shift and ctrl modifiers, cfgs are now named as config_${cl->gameident()},
+                          and a configuration version that ignores obsolete cfgs
+* particles             - particle textures were again tweaked, and new settings for /newent particles, 11 and 12, text and snow respectively
+* entity tweaks         - 5th entity attribute is active, it sets bonus properties, have a play around! also base and monster were respectively
+                          renamed banana and creature, and there's a dynlight entity
+* scripts               - menu tweaks; rewritten sky menu, far more helpful edithud (text at bottom left), you'll never go without it again! Linux
+                          installation and build scripts in src are far improved
+* maps                  - tweaks to existing ones, and new maps; mansion and island, generates mapcfg on save
+* textures              - a new texture set from OpenFootage, new logos, cloudbox and a brand new 2.3 theme!
+* rendering             - editmode helpers, extra player skins to choose from (press 0 while not in editmode)
+* misc                  - moviecube (run with -gmovie), ambiguous texture names, alpha state SSP module
+* upstream              - blend painting, stackable fullscreen shaders, deferred shaders, normal compression, blob shadows, revised stair physics
+                          rotational bbs for mapmodels, fixed function lights and shadows, and tons of other tweaks and bug fixes, new loading screen
+
+=BUGS!!!=
+
+* forgetting a bracket in a script caused a crash. --> []"() <-- the trouble makers, throw pies at them :D
+* Selecting monsters 7 or 8 caused a crash
+* the mapshot when maps were loading wasn't scaling. fixed and loadbacktype 2 also has nicer positioning of the overlaytext now.
+* the particle menus had several parts missing, a colour conversion here, and a "particles" somewhere else.
+* guirollover of icons didn't do anything, they now have colour masks applied correctly, depending on guirollovercolour
+
+
+
+Platinum Arts Sandbox 2.2 Changes rev 446
+=========================================
+
+Lan server browser
+Added in a Banana Relay gamemode. just quicker Capture with bananas instead of flags :)
+Add some basic multilingual support, no special characters sorry! we've several translations too!
+usual assortment of menu improvements!
+Improvements to some of the maps
+Redone water textures, specially with the new waterfall stuff.
+showlighting mode (thanks quin!)
+new map, forest!
+Improved audio IO (automatically identifies most extensions)
+Better Jukebox and Music Pack support... jsut a shame we didn't release any yet :D
+Allowed changing of the gui element textures
+loadback images (more of quin's code, cept he didn't hold Hirato's hand this time :P )
+A New GUI/HUD texture set by Hirato.
+A win32 launcher by ZKAT8IT
+
+PAS 2.2 sauer changes
+=====================
+
+added OBJ model support
+added support for cloud boxes and cloud layers over sky box
+added in-game text editor for editing cfg files
+texture browser now displays glow, rotation, and offsets
+added console message filter (controlled via "confilter" and "fullconfilter" vars)
+"follow" command now works in first-person (can spectate in third-person via "thirdperson" var or 9 key)
+added support for Mumble positional audio (contributed by The Conquerors clan)
+added "apply changes now?" dialog using "resetgl" command (toggled via "applydialog" var)
+added "fullconsize" var for controlling the percent of the screen the full console occupies
+undo now works with heightmap editing mode
+lowered the minimum gridpower to 0
+added "texoffset", "texrotate", and "texscale" commands for more easily specifying texture slot parameters
+added support for a follow distance of 0 (via "followdist 0") when using the "follow" command
+texture rotation is now done via texture coordinate generation (instead of making copies/wasting memory)
+added "sayteam" command for chatting to teammates (bound to Y key by default)
+added optional t-joint removal to fix world sparklies (toggled via "filltjoints" var)
+player is now dumped to an empty map if he does not have the particular map in multiplayer
+added support for soft particles/explosions (toggled via "depthfx" var)
+added support for "pulseglow" shaders in fixed-function mode
+added "texscroll" command for scrolling texture slots
+added cheaper/more-controlled glow/specular bloom (controlled via "glare" var)
+scoreboard now always defaults to 2D, regardless of GUI settings (controlled via "scoreboard2d" var)
+added "waterfallcolour" command to control coloring of waterfalls separately from water
+added refractive waterfalls (controlled via "waterfallrefract" var, disabled by default due to cost)
+added environment-mapped waterfalls (controlled via "waterfallenv" var)
+added tethers that show who is capturing a base (controlled via "capturetether" var)
+rewrote particle renderer to make it more extensible
+rewrote world renderer to more efficiently batch draw calls
+made lightmaps use a texture atlas to enable better batching of draw calls
+locked physics at fixed rate of 200 Hz (no more variable rate)
+
+
+
+Platinum Arts Sandbox 2.1 Completed
+===================================
+
+Better, debugged and easier to use menu (not that much easier :) )
+More textures, and cool shaders are in effect too
+More skyboxes
+Better, and bigger and MORE example maps, most of hirato's can already count towards eye candy
+a few modified models and code, quite a few contributed by gear
+Heavily updated source, now with rewritten physics
+PVS system with an updated map format
+plenty of bugfixes
+
+
+
+Platinum Arts Sandbox 2.0 To Do: (NOTE 2.0 was revision 89)

@@ -1,0 +1,82 @@
+# ignore compiled objects
+*.o
+*.gch
+*.pch
+*.a
+
+# and backups *.orig
+*.rej
+*.bak
+*~
+
+# and temporaries
+*.kate-swp
+
+# and generated files
+src/windows/sandbox.depend
+
+# and some misc text formats
+*.diff
+*.patch
+
+# and binaries
+*.dbg
+*.bin
+*.exe
+/src/tessfont
+/bin/debug_server_32_fps
+/bin/debug_server_32_rpg
+/bin/debug_server_32_ssp
+/bin/debug_server_32_krs
+/bin/debug_server_32_movie
+/bin/debug_server_64_rpg
+/bin/debug_server_64_ssp
+/bin/debug_server_64_krs
+/bin/debug_client_32_fps
+/bin/debug_client_32_rpg
+/bin/debug_client_32_ssp
+/bin/debug_client_32_krs
+/bin/debug_client_32_movie
+/bin/sandbox_server_32_rpg
+/bin/sandbox_server_32_ssp
+/bin/sandbox_server_32_krs
+/bin/sandbox_server_64_rpg
+/bin/sandbox_server_64_ssp
+/bin/sandbox_server_64_krs
+/bin/debug_client_64_fps
+/bin/debug_client_64_rpg
+/bin/debug_server_64_movie
+/bin/sandbox_client_32_movie
+/bin/sandbox_client_64_fps
+/bin/sandbox_client_64_rpg
+/bin/sandbox_server_32_movie
+/bin/debug_client_64_krs
+/bin/debug_client_64_ssp
+/bin/sandbox_client_32_fps
+/bin/sandbox_client_32_rpg
+/bin/sandbox_client_64_krs
+/bin/sandbox_client_64_ssp
+/bin/sandbox_server_64_fps
+/bin/debug_client_64_movie
+/bin/debug_server_64_fps
+/bin/sandbox_client_32_krs
+/bin/sandbox_client_32_ssp
+/bin/sandbox_client_64_movie
+/bin/sandbox_server_32_fps
+/bin/sandbox_server_64_movie
+/bin/sandbox_master
+/_SandBoxLauncher
+/launcher
+/launcher_new
+
+# Coverity
+/src/cov-int/
+*.tmp_cov
+
+# archives
+*.zip
+*.rar
+*.tar
+*.tar.*
+*.tgz
+*.xz

@@ -1,0 +1,7 @@
+ENET_CFLAGS= -m32
+CXXFLAGS?= -O3
+override CXXFLAGS+= -m32
+
+MACHINENAME=32
+
+include includes.mk

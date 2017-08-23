@@ -1,0 +1,4 @@
+ENET_CFLAGS=
+CXXFLAGS= -g
+
+include includes.mk

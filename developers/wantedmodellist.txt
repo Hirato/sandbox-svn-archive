@@ -1,0 +1,34 @@
+if you have a mapmodel you would like, just add it into this list, and gear MIGHT make one when he feels like it.
+
+Hirato
+======
+
+arranged in urgency level
+
+* doors with opening, and mapmodel animations. kinda sci-fi ish. see door1.jpg for a messy concept drawing.
+* Elevator/Platform models, something like out of jak and daxter (a round thing that hovers or has some fire or something underneath it) would be quite cool.
+* More Varieties of trees, from small ferns to huge overgrown oaks and willows.
+* A waterwheel, like those medieval kind that spins around as a stream pushes it.
+
+Calimer
+=======
+
+Animals - Deer (eats grass, drinks water), 
+bunnies hopping around
+Npcs - miner, fishing dude
+butterflies
+bird(s)
+platform 
+elevator
+doors
+robochimp doing flips in his idle? or something else interesting?
+flowers
+frogs?
+lilypads?
+horse, dragon, bear (from RPG).  I would love to have them wandering around doing their own thing
+
+Done
+====
+
+* Banana
+* Fish Mapmodel

@@ -1,0 +1,9 @@
+Dear Leo, this is your todo list for the moment, as you requested.
+
+1. tweak the checkbox and radio icons to on average, feature lighter shades of greens and reds
+2. Improved backgrounds for UIExpandable, TextEditor, and UIField objects.
+3. Use a different (perferably darker) colour for the titlebar - also make it solid. It doesn't really distinguish itself enough from the tabs right underneath it.
+
+
+Game icons are optional, but if you want to do
+them, higher quality "invest" and "revert" icons will be appreciated. For the former, a +5 variant will too.

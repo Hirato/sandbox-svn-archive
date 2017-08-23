@@ -1,0 +1,9 @@
+Sandbox is based on a software engine that included weapons and monsters.  A lot of effort has gone into removing the ability for weapons and monsters to be used, though there is the unlikely chance that something was missed.  In addition, references to monsters and weapons may appear in the source code (the contents of the folder named /src).  Future releases will strive to remove even more of these references until they are removed completely.  When you use this software you agree to keep that in mind and will not hold Platinum Arts liable for any related incidents.  For any questions and comments please e-mail PlatinumArts@gmail.com
+
+In addition the sidescroller mode features mild "mario" like action.  The new RPG mode includes spells and ragdoll effects.  Teachers/parents might want to try the mode out first and make sure it is appropriate for their children.  RPG.bat can simply be deleted if it is deemed not suitable.
+
+Copyright (C) 2007 Platinum Arts LLC
+
+This software is provided 'as-is', without any express or implied
+warranty.  In no event will the authors be held liable for any damages
+arising from the use of this software.
